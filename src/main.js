@@ -43,6 +43,8 @@ async function inputSearch(event) {
         const { data } = await fetchPhotoByPixaby(textInput, numberPage)
         loaderElem.classList.remove('is-visible')
 
+        console.log(data)
+
         if (!data.hits.length) {
             iziToast.error({
                 title: 'Error',
@@ -52,6 +54,18 @@ async function inputSearch(event) {
                 position: 'topRight',
             });
             return
+        }
+
+        if(data.hits.length >= data.totalHits) {
+            loadMoreBtnElem.classList.remove('is-hidden')
+            loadMoreBtnElem.removeEventListener('click', onLoadMoreBtn)
+
+            iziToast.info({
+                message: "We're sorry, but you've reached the end of search results.",
+                backgroundColor: 'blue',
+                theme: 'light',
+                position: 'topRight',
+            });
         }
 
         galleryListElem.innerHTML = createCard(data.hits)
@@ -83,18 +97,17 @@ async function onLoadMoreBtn() {
         const { data } = await fetchPhotoByPixaby(textInput, numberPage)
 
         galleryListElem.insertAdjacentHTML('beforeend', createCard(data.hits))
+        // if (numberPage >= data.totalHits) {
+            // loadMoreBtnElem.classList.remove('is-hidden')
+            // loadMoreBtnElem.removeEventListener('click', onLoadMoreBtn)
 
-        if (numberPage >= data.totalHits) {
-            loadMoreBtnElem.classList.remove('is-hidden')
-            loadMoreBtnElem.removeEventListener('click', onLoadMoreBtn)
-
-            iziToast.info({
-                message: "We're sorry, but you've reached the end of search results.",
-                backgroundColor: 'blue',
-                theme: 'light',
-                position: 'topRight',
-            });
-        }
+            // iziToast.info({
+            //     message: "We're sorry, but you've reached the end of search results.",
+            //     backgroundColor: 'blue',
+            //     theme: 'light',
+            //     position: 'topRight',
+            // });
+        // }
         // Code for scroll
         function getCardHeight() {
             const card = document.querySelector('.gallery-item')
