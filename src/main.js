@@ -34,6 +34,12 @@ async function inputSearch(event) {
     try {
         loaderElem.classList.add('is-visible')
 
+        //reset gallery 
+        galleryListElem.innerHTML = ''
+
+        // reset input
+        inputFormElem.value = ''
+
         const { data } = await fetchPhotoByPixaby(textInput, numberPage)
         loaderElem.classList.remove('is-visible')
 
@@ -47,12 +53,12 @@ async function inputSearch(event) {
             });
             return
         }
+
         galleryListElem.innerHTML = createCard(data.hits)
         loadMoreBtnElem.classList.remove('is-hidden')
         loadMoreBtnElem.addEventListener('click', onLoadMoreBtn)
 
         gallery.refresh()
-        inputFormElem.value = ''
 
     } catch (error) {
         console.log(error)
@@ -78,7 +84,7 @@ async function onLoadMoreBtn() {
 
         galleryListElem.insertAdjacentHTML('beforeend', createCard(data.hits))
 
-        if (numberPage === data.totalHits) {
+        if (numberPage >= data.totalHits) {
             loadMoreBtnElem.classList.remove('is-hidden')
             loadMoreBtnElem.removeEventListener('click', onLoadMoreBtn)
 
@@ -89,7 +95,6 @@ async function onLoadMoreBtn() {
                 position: 'topRight',
             });
         }
-
         // Code for scroll
         function getCardHeight() {
             const card = document.querySelector('.gallery-item')
