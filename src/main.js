@@ -43,8 +43,6 @@ async function inputSearch(event) {
         const { data } = await fetchPhotoByPixaby(textInput, numberPage)
         loaderElem.classList.remove('is-visible')
 
-        console.log(data)
-
         if (!data.hits.length) {
             iziToast.error({
                 title: 'Error',
@@ -57,7 +55,7 @@ async function inputSearch(event) {
         }
 
         if(data.hits.length >= data.totalHits) {
-            loadMoreBtnElem.classList.remove('is-hidden')
+            loadMoreBtnElem.classList.add('is-hidden')
             loadMoreBtnElem.removeEventListener('click', onLoadMoreBtn)
 
             iziToast.info({
@@ -66,10 +64,11 @@ async function inputSearch(event) {
                 theme: 'light',
                 position: 'topRight',
             });
+        } else {
+            loadMoreBtnElem.classList.remove('is-hidden')
         }
 
         galleryListElem.innerHTML = createCard(data.hits)
-        loadMoreBtnElem.classList.remove('is-hidden')
         loadMoreBtnElem.addEventListener('click', onLoadMoreBtn)
 
         gallery.refresh()
